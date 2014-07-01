@@ -29,6 +29,7 @@ body {
 	overflow: hidden;
 }
 .todo-body .todos-holder {
+	position: relative;
 	width: 500px;
 }
 .sub-holder h2 {
@@ -42,6 +43,7 @@ body {
 }
 .todos-holder ul.list-holder {
 	padding: 0;
+	margin-bottom: 30px;
 }
 .todos-holder .list-holder li {
 	position: relative;
@@ -50,6 +52,7 @@ body {
 	margin-bottom: 5px;
 	border: 1px solid #C0C0C0;
 	border-radius: 8px;
+	background-color: #FFFFFF;
 	display: block;
 }
 .todos-holder .list-holder li .view .toggle {
@@ -58,6 +61,11 @@ body {
 }
 .todos-holder .list-holder li .view label {
 	float: left;
+	width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
 }
 .todos-holder .list-holder li .view .destroy {
 	position: absolute;
@@ -67,7 +75,27 @@ body {
 	height: 20px;
 	background: url(destroy.png) no-repeat;
 }
-
+.todos-holder .list-holder li.task-completed .view label {
+	text-decoration: line-through;
+}
+.todos-holder .footer-controls {
+	position: absolute;
+	height: 30px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #CBE4A6;
+}
+.todos-holder .footer-controls .items-left {
+	position: absolute;
+	top: 6px;
+	left: 10px;
+}
+.todos-holder .footer-controls .clear-items {
+	position: absolute;
+	top: 6px;
+	right: 10px;
+}
 
 .todo-body .details-holder {
 	width: 300px;
@@ -76,7 +104,13 @@ body {
 }
 
 
-
+.todo-body .span-label {
+	background: rgba(0, 0, 0, 0.1);
+	float: left;
+	padding: 0 10px;
+	margin-right: 10px;
+	border-radius: 8px;
+}
 .todo-body .controls {
 	width: 100%;
 	display: inline-block;

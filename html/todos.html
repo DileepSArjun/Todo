@@ -4,49 +4,92 @@
 	<meta charset="UTF-8">
 	<title>TODOS</title>
 	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<script type="text/javascript" src="../js/base.js"></script>
+	<script type="text/javascript" src="../js/view_handler.js"></script>
 </head>
 <body class="todo-body">
 	<div class="main-container">
-		<div class="sub-holder todos-holder float-left">
-			<h2>Todos</h2>
+		<div id="todos_holder" class="sub-holder todos-holder float-left">
+			<h2 class="todos_header">Todos</h2>
 			<div class="controls">
 				<input id="input_quick_add" type="text">
 			</div>
-			<ul class="list-holder controls">
-				<li>
-					<div class="view">
-						<input class="toggle" type="checkbox">
-						<label>First Item</label>
-						<a class="destroy"></a>
-					</div>
-				</li>
-				<li>
-					<div class="view">
-						<input class="toggle" type="checkbox">
-						<label>Second Item</label>
-						<a class="destroy"></a>
-					</div>
-				</li>
-			</ul>
+			<ul class="list-holder controls"></ul>
+			<div class="footer-controls">
+				<a class="span-label float-left items-left">0 items left</a>
+				<a class="span-label float-right clear-items">Clear 1 completed item</a>
+			</div>
 		</div>
 		<div class="sub-holder details-holder float-left">
 			<h2>Details</h2>
 			<div class="controls">
 				<label class="label">Title</label>
-				<input class="input" type="text">
+				<input id="input_title" class="input" type="text">
 			</div>
 			<div class="controls">
 				<label class="label">Description</label>
-				<input class="input" type="text">
+				<input id="input_desc" class="input" type="text">
 			</div>
 			<div class="controls">
 				<label class="label">Priority</label>
-				<input class="input" type="text">
+				<input id="input_priority" class="input" type="text">
 			</div>
 			<div class="controls">
-				<button>Add/Edit</button>
+				<label class="label">Order</label>
+				<input id="input_order" class="input" type="text">
+			</div>
+			<div class="controls">
+				<button id="add_btn">Add</button>
 			</div>
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	var todosObj = null;
+	(function(){
+
+		var title = $$.find('#input_title'),
+			desc = $$.find('#input_desc'),
+			order = $$.find('#input_order'),
+			priority = $$.find('#input_priority');
+
+		todosObj = new TodosList({
+			holder : $$.find('#todos_holder .list-holder'),
+			caption : "Todos",
+			controls : {
+				itemsLeft : $$.find('#todos_holder .footer-controls .items-left'),
+				clearFinished : $$.find('#todos_holder .footer-controls .clear-items')
+			}
+		});
+
+		order.value = todosObj.nextOrder();
+
+		$$.find('#add_btn').addEventListener("click", function(event){
+
+			todosObj && todosObj.add({
+				title : title.value || "test",
+				desc : desc.value || "",
+				order : order.value,
+				priority : priority.value || 3
+			});
+
+			title.value = desc.value = priority.value = "";
+			order.value = todosObj.nextOrder();
+		});
+
+		$$.find('#input_quick_add').addEventListener('keyup', function(event){
+			if(event.keyCode == 13){
+				var bo = $$.find('#input_quick_add');
+				todosObj && todosObj.add({
+					title : bo.value || "test",
+					priority : 3,
+					order : todosObj.nextOrder()
+				});
+				bo.value = "";
+				order.value = todosObj.nextOrder();
+			}
+		});
+
+	})();
+</script>
 </html>
