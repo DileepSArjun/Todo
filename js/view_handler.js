@@ -3,7 +3,8 @@ var TodosList = function(settings){
 	var options = $$.extend({
 			holder : null,
 			caption : 'TODOS',
-			controls : null
+			controls : null,
+			detailView : null
 		}, settings),
 		that = this;
 
@@ -30,6 +31,7 @@ var TodosList = function(settings){
 
 		bo.id = "todos-item-" + that._nextOrder;
 		item.done && $$.toggleClass(bo, 'task-completed');
+		bo.setAttribute('data-attr', JSON.stringify(item));
 
 		bo.innerHTML = "<div class='view'>"+
 						"<input class='toggle' type='checkbox'"+(item.done ? 'checked' : '')+">"+
@@ -44,7 +46,6 @@ var TodosList = function(settings){
 
 	function init(){
 		that.reload();
-		that._bindEvents();
 	};
 
 
@@ -56,15 +57,20 @@ var TodosList = function(settings){
 			if(event.target.className === "toggle"){
 				$$.toggleClass(event.currentTarget, 'task-completed');
 			}else if(event.target.className === "destroy"){
-				console.log("delete item");
+				options.holder.removeChild(event.currentTarget);
+			}else {
+				options.detailView && that._populateDetails(JSON.parse(event.currentTarget.getAttribute('data-attr')));
 			}
 		});
 
 		return bo;
 	};
 
-	this._bindEvents = function(){
-
+	this._populateDetails = function(details){
+		options.detailView.title.value = details.title;
+		options.detailView.desc.value = details.desc;
+		options.detailView.order.value = details.order;
+		options.detailView.priority.value = details.priority;
 	};
 
 	//public methods
@@ -74,7 +80,10 @@ var TodosList = function(settings){
 		that._nextOrder++;
 	};
 
-	this.remove = function(){};
+	this.remove = function(){
+		return true;
+	};
+
 	this.edit = function(){};
 	this.getDetails = function(){};
 
