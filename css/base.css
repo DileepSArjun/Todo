@@ -75,8 +75,20 @@ body {
 	height: 20px;
 	background: url(destroy.png) no-repeat;
 }
+.todos-holder .list-holder li .view .destroy:hover {
+	background-position-y: -20px;
+}
 .todos-holder .list-holder li.task-completed .view label {
 	text-decoration: line-through;
+}
+.todos-holder .list-holder li .priority.p1 {
+	background-color: #E06666;
+}
+.todos-holder .list-holder li .priority.p2 {
+	background-color: #FFE599;
+}
+.todos-holder .list-holder li .priority.p3 {
+	background-color: #93C47D;
 }
 .todos-holder .footer-controls {
 	position: absolute;
@@ -95,6 +107,7 @@ body {
 	position: absolute;
 	top: 6px;
 	right: 10px;
+	cursor: pointer;
 }
 
 .todo-body .details-holder {
