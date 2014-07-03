@@ -37,9 +37,13 @@ $$.toggleClass = function(element, className){
 };
 
 Array.prototype.removeValue = function(name, value){
-   var array = $.map(this, function(v,i){
-      return v[name] === value ? null : v;
-   });
+   var array = [];
+
+   for(var i = 0; i< this.length; i++){
+        if(this[i][name] !== value){
+            array.push(this[i]);
+        }
+   }
    this.length = 0; //clear original array
    this.push.apply(this, array); //push all elements except the one we want to delete
 }

@@ -10,62 +10,18 @@ var TodosList = function(settings){
 		}, settings),
 		that = this;
 
-	function fetchData(){
-		var todos = [{
-			title : 'Have breakfast',
-			desc : 'heavy food',
-			order : 1,
-			priority : 1,
-			done : true
-		}, {
-			title : 'Team meeting',
-			desc : 'Baraweez team meeting',
-			order : 2,
-			priority : 2,
-			done : false
-		}, {
-			title : 'Client Call',
-			desc : 'Baraweez Client call',
-			order : 3,
-			priority : 1,
-			done : false
-		},{
-			title : 'Cropper lib issues',
-			desc : 'Resolve cropper lib redmine issues',
-			order : 4,
-			priority : 2,
-			done : false
-		},{
-			title : 'Redmine issue fixes',
-			desc : 'Work on Todo project',
-			order : 5,
-			priority : 3,
-			done : false
-		},{
-			title : 'Facebook Api integration',
-			desc : 'For filepicker plugin',
-			order : 6,
-			priority : 1,
-			done : false
-		}];
-
-		return todos;
-	};
-
-	function fetchStorageData(){};
-
 	function addItem(item){
 		var bo = document.createElement('li');
 
 		bo.id = "todos-item-" + that._nextOrder;
+		bo.className = "li-item";
 		item.done && $$.toggleClass(bo, 'task-completed');
 		bo.setAttribute('data-attr', JSON.stringify(item));
 
 		bo.innerHTML = "<div class='view'>"+
 						"<input class='toggle' type='checkbox'"+(item.done ? 'checked' : '')+">"+
-						"<label title='"+item.desc+"'>"+item.title+"</label>"+
+						"<label title='"+(item.desc || '')+"'>"+item.title+"</label>"+
 						"<span class='priority span-label p"+item.priority+"' title='Priority'>"+item.priority+"</span>"+
-						"<span class='order span-label' title='Order'>"+item.order+"</span>"+
 						"<a class='destroy'></a>"+
 					"</div>";
 
@@ -81,9 +37,9 @@ var TodosList = function(settings){
 			orderedData =  [];
 
 		for(var i = 0; i < dataSet.length ; i++){
-			if(dataSet[i].priority === 1){
+			if(Math.abs(dataSet[i].priority) === 1){
 				p1.push(dataSet[i]);
-			}else if(dataSet[i].priority === 2){
+			}else if(Math.abs(dataSet[i].priority) === 2){
 				p2.push(dataSet[i]);
 			}else {
 				p3.push(dataSet[i]);
@@ -115,6 +71,7 @@ var TodosList = function(settings){
 				items[i].title = item.title;
 				items[i].desc = item.desc;
 				items[i].priority = item.priority;
+				items[i].done = item.done || false;
 			}
 		}
 
@@ -125,12 +82,13 @@ var TodosList = function(settings){
 		var items = backendPull();
 
 		items.removeValue('id', id);
+		backendPush(items);
 	};
 
 
 	function init(){
 		that.reload();
-		that._bindControls();
+		that._bindEvents();
 	};
 
 
@@ -159,22 +117,36 @@ var TodosList = function(settings){
 
 	this._bindEventsOnList = function(bo){
 		bo.addEventListener('click', function(event){
+			event.stopPropagation();
 
 			if(event.target.className === "toggle"){
+				var itemData = JSON.parse(event.currentTarget.getAttribute('data-attr'));
+
 				$$.toggleClass(event.currentTarget, 'task-completed');
 				that._modifItemsLeft();
+				if($$.hasClass(event.currentTarget, 'task-completed')){
+					itemData.done = true;
+				}else {
+					itemData.done = false;
+				}
+
+				that.edit(itemData);
 			}else if(event.target.className === "destroy"){
 				that.remove(event.currentTarget);
 			}else {
 				options.detailView && that._populateDetails(JSON.parse(event.currentTarget.getAttribute('data-attr')));
 			}
+
+			that._isEdit = true;
+			options.controls.add && (options.controls.add.disabled = true);
+			options.controls.edit && (options.controls.edit.disabled = false);
 		});
 
 		return bo;
 	};
 
 	this._bindControls = function(){
-		if(!options.controls) return false;
+		if(!options.controls) return false;		
 
 		options.controls.clearFinished && options.controls.clearFinished.addEventListener('click', function(){
 			that.clearCompleted();
@@ -185,16 +157,29 @@ var TodosList = function(settings){
 		});
 	};
 
+	this._bindEvents = function(){
+		$$.find('body').addEventListener('click', function(event){
+			if(!$$.hasClass(event.target, 'li-item')){
+				that._isEdit = false;
+				options.controls.add && (options.controls.add.disabled = false);
+				options.controls.edit && (options.controls.edit.disabled = true);
+			}
+		});
+
+		that._bindControls();
+	};
+
 	this._populateDetails = function(details){
-		options.detailView.title.value = details.title;
-		options.detailView.desc.value = details.desc;
+		options.detailView.title.value = details.title || "";
+		options.detailView.desc.value = details.desc || "";
 		options.detailView.order.value = details.order;
-		options.detailView.priority.value = details.priority;
+		options.detailView.priority.value = details.priority || 3;
 	};
 
 	//public methods
 
 	this.add = function(item){
+		//if(that._isEdit) return false;
 		options.holder.appendChild(that._bindEventsOnList(addItem(item)));
 		backendAdd(item);
 		that._nextOrder++;
@@ -202,13 +187,17 @@ var TodosList = function(settings){
 	};
 
 	this.remove = function(item){
-		var id = item.id;
+		var id = JSON.parse(item.getAttribute('data-attr')).id;
 		options.holder.removeChild(item);
 		that._modifItemsLeft();
-		//add call to remove the item from local-satorage with the same id
+		backendDelete(id);
 	};
 
-	this.edit = function(){};
+	this.edit = function(item){
+		//if(!that._isEdit) return false;
+		backendEdit(item);
+		that.reload();
+	};
 
 	this.getNextOrder = function(){
 		return that._nextOrder;
@@ -224,15 +213,19 @@ var TodosList = function(settings){
 
 		for(var i = 0; i < dataSet.length; i++){
 			options.holder.appendChild(that._bindEventsOnList(addItem(dataSet[i])));
+			that._nextOrder++;
 		}
+
+		that._modifItemsLeft();
+		options.controls && options.controls.selectSort && (options.controls.selectSort.value = "ORDER");
 	};
 
 	this.reorderByPriority = function(){
-		var dataSet = orderByPriority(fetchData());
+		var dataSet = orderByPriority(backendPull());
 		options.holder.innerHTML = "";
 
 		for(var i = 0; i < dataSet.length ; i++){
-			that.add(dataSet[i]);
+			options.holder.appendChild(that._bindEventsOnList(addItem(dataSet[i])));
 		}
 	};
 

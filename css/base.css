@@ -81,6 +81,10 @@ body {
 	height: 20px;
 	background: url(destroy.png) no-repeat;
 }
+.todos-holder .list-holder li .priority {
+	padding: 0 30px;
+	font-weight: bold;
+}
 .todos-holder .list-holder li .view .destroy:hover {
 	background-position-y: -20px;
 }

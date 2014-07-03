@@ -41,10 +41,11 @@
 			</div>
 			<div class="controls">
 				<label class="label">Order</label>
-				<input id="input_order" class="input" type="text">
+				<input id="input_order" class="input" type="text" disabled>
 			</div>
 			<div class="controls">
 				<button id="add_btn">Add</button>
+				<button id="edit_btn">Edit</button>
 			</div>
 		</div>
 	</div>
@@ -62,6 +63,8 @@
 			holder : $$.find('#todos_holder .list-holder'),
 			caption : "Todos",
 			controls : {
+				add : $$.find('#add_btn'),
+				edit : $$.find('#edit_btn'),
 				itemsLeft : $$.find('#todos_holder .footer-controls .items-left'),
 				clearFinished : $$.find('#todos_holder .footer-controls .clear-items'),
 				add : $$.find('#add_btn'),
@@ -84,6 +87,21 @@
 				title : title.value || "test",
 				desc : desc.value || "",
 				order : order.value,
+				priority : priority.value || 3,
+				done : false
+			});
+
+			title.value = desc.value = priority.value = "";
+			order.value = todosObj.nextOrder();
+		});
+
+		$$.find('#edit_btn').addEventListener("click", function(event){
+
+			todosObj && todosObj.edit({
+				id : "id-" + order.value,
+				title : title.value || "test",
+				desc : desc.value || "",
+				order : order.value,
 				priority : priority.value || 3
 			});
 
@@ -98,7 +116,8 @@
 					id : "id-" +  order.value,
 					title : bo.value || "test",
 					priority : 3,
-					order : todosObj.nextOrder()
+					order : todosObj.nextOrder(),
+					done : false
 				});
 				bo.value = "";
 				order.value = todosObj.nextOrder();
