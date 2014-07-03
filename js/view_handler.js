@@ -1,3 +1,5 @@
+var STORAGE_KEY = "todos-items";
+
 var TodosList = function(settings){
 	//privare methods
 	var options = $$.extend({
@@ -19,12 +21,38 @@ var TodosList = function(settings){
 			title : 'Team meeting',
 			desc : 'Baraweez team meeting',
 			order : 2,
+			priority : 2,
+			done : false
+		}, {
+			title : 'Client Call',
+			desc : 'Baraweez Client call',
+			order : 3,
+			priority : 1,
+			done : false
+		},{
+			title : 'Cropper lib issues',
+			desc : 'Resolve cropper lib redmine issues',
+			order : 4,
+			priority : 2,
+			done : false
+		},{
+			title : 'Redmine issue fixes',
+			desc : 'Work on Todo project',
+			order : 5,
+			priority : 3,
+			done : false
+		},{
+			title : 'Facebook Api integration',
+			desc : 'For filepicker plugin',
+			order : 6,
 			priority : 1,
 			done : false
 		}];
 
 		return todos;
 	};
+
+	function fetchStorageData(){};
 
 	function addItem(item){
 		var bo = document.createElement('li');
@@ -43,6 +71,62 @@ var TodosList = function(settings){
 
 		return bo;
 	};
+
+	function orderByPriority(dataSet){
+		if(dataSet.length <= 0) return [];
+
+		var p1 = [],
+			p2 = [],
+			p3 = [],
+			orderedData =  [];
+
+		for(var i = 0; i < dataSet.length ; i++){
+			if(dataSet[i].priority === 1){
+				p1.push(dataSet[i]);
+			}else if(dataSet[i].priority === 2){
+				p2.push(dataSet[i]);
+			}else {
+				p3.push(dataSet[i]);
+			}
+		}
+
+		return p1.concat(p2).concat(p3);
+	};
+
+	function backendPull(){
+		return JSON.parse(LocalStorekeep.get(STORAGE_KEY));
+	};
+
+	function backendPush(value){
+		LocalStorekeep.set(STORAGE_KEY, JSON.stringify(value));
+	};
+
+	function backendAdd(item){
+		var items = backendPull() || [];
+		item && items.push(item);
+		backendPush(items);
+	};
+
+	function backendEdit(item){
+		var items = backendPull();
+
+		for(var i = 0; i < items.length; i++){
+			if(items[i].id === item.id){
+				items[i].title = item.title;
+				items[i].desc = item.desc;
+				items[i].priority = item.priority;
+			}
+		}
+
+		backendPush(items);
+	};
+
+	function backendDelete(id){
+		var items = backendPull();
+
+		items.removeValue('id', id);
+	};
+
 
 	function init(){
 		that.reload();
@@ -96,7 +180,9 @@ var TodosList = function(settings){
 			that.clearCompleted();
 		});
 
-		
+		options.controls.selectSort && options.controls.selectSort.addEventListener('change', function(event){
+			that.sort(event.currentTarget.value);
+		});
 	};
 
 	this._populateDetails = function(details){
@@ -110,6 +196,7 @@ var TodosList = function(settings){
 
 	this.add = function(item){
 		options.holder.appendChild(that._bindEventsOnList(addItem(item)));
+		backendAdd(item);
 		that._nextOrder++;
 		!item.done && that._modifItemsLeft();
 	};
@@ -122,17 +209,29 @@ var TodosList = function(settings){
 	};
 
 	this.edit = function(){};
-	this.getDetails = function(){};
 
 	this.getNextOrder = function(){
 		return that._nextOrder;
 	};
 
 	this.reload = function(){
-		var dataSet = fetchData();
+		//var dataSet = fetchData();
+		var dataSet = backendPull();
 		options.holder.innerHTML = "";
 
+		if(!dataSet) return false;
+		if(dataSet.length <=0) return false;
+
 		for(var i = 0; i < dataSet.length; i++){
+			options.holder.appendChild(that._bindEventsOnList(addItem(dataSet[i])));
+		}
+	};
+
+	this.reorderByPriority = function(){
+		var dataSet = orderByPriority(fetchData());
+		options.holder.innerHTML = "";
+
+		for(var i = 0; i < dataSet.length ; i++){
 			that.add(dataSet[i]);
 		}
 	};
@@ -144,6 +243,18 @@ var TodosList = function(settings){
 			if($$.hasClass(itemsBo[i], 'task-completed')){
 				that.remove(itemsBo[i]);
 			}
+		}
+	};
+
+	this.sort = function(value){
+		value = value.toUpperCase();
+
+		if(value === "ORDER"){
+			that.reload();
+		}else if(value === "PRIORITY"){
+			that.reorderByPriority();
+		}else {
+			return false;
 		}
 	};
 

@@ -5,6 +5,7 @@
 	<title>TODOS</title>
 	<link rel="stylesheet" type="text/css" href="../css/base.css">
 	<script type="text/javascript" src="../js/base.js"></script>
+	<script type="text/javascript" src="../js/localstorage_handler.js"></script>
 	<script type="text/javascript" src="../js/view_handler.js"></script>
 </head>
 <body class="todo-body">
@@ -13,11 +14,15 @@
 			<h2 class="todos_header">Todos</h2>
 			<div class="controls">
 				<input id="input_quick_add" type="text">
+				<select id="input_select_sort">
+					<option value="ORDER">Sort by Order</option>
+					<option value="PRIORITY">Sort by Priority</option>
+				</select>
 			</div>
 			<ul class="list-holder controls"></ul>
 			<div class="footer-controls">
 				<a class="span-label float-left items-left">0 items left</a>
-				<a class="span-label float-right clear-items">Clear 1 completed item</a>
+				<a class="span-label float-right clear-items">Clear 0 completed item</a>
 			</div>
 		</div>
 		<div class="sub-holder details-holder float-left">
@@ -59,7 +64,8 @@
 			controls : {
 				itemsLeft : $$.find('#todos_holder .footer-controls .items-left'),
 				clearFinished : $$.find('#todos_holder .footer-controls .clear-items'),
-				add : $$.find('#add_btn');
+				add : $$.find('#add_btn'),
+				selectSort :  $$.find('#input_select_sort')
 			},
 			detailView : {
 				title : title,
@@ -74,6 +80,7 @@
 		$$.find('#add_btn').addEventListener("click", function(event){
 
 			todosObj && todosObj.add({
+				id : "id-" + order.value,
 				title : title.value || "test",
 				desc : desc.value || "",
 				order : order.value,
@@ -88,6 +95,7 @@
 			if(event.keyCode == 13){
 				var bo = $$.find('#input_quick_add');
 				todosObj && todosObj.add({
+					id : "id-" +  order.value,
 					title : bo.value || "test",
 					priority : 3,
 					order : todosObj.nextOrder()

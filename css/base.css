@@ -36,8 +36,14 @@ body {
 	font-size: 15px;
 }
 .todos-holder #input_quick_add {
-	width: 100%;
+	width: 70%;
 	height: 25px;
+	border: 1px solid #666666;
+	border-radius: 8px;
+	float: left;
+}
+.todos-holder #input_select_sort {
+	height: 29px;
 	border: 1px solid #666666;
 	border-radius: 8px;
 }
