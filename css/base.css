@@ -13,6 +13,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #374A5D;
+	font-family: sans-serif;
 }
 .todo-body .main-container {
 	width: 100%;
@@ -33,11 +34,12 @@ body {
 	width: 500px;
 }
 .sub-holder h2 {
-	font-size: 15px;
+	font-size: 20px;
 }
 .todos-holder #input_quick_add {
 	width: 70%;
 	height: 25px;
+	padding-left: 10px;
 	border: 1px solid #666666;
 	border-radius: 8px;
 	float: left;
@@ -86,10 +88,13 @@ body {
 	font-weight: bold;
 }
 .todos-holder .list-holder li .view .destroy:hover {
-	background-position-y: -20px;
+	background-position: 0 -20px;
 }
 .todos-holder .list-holder li.task-completed .view label {
 	text-decoration: line-through;
+}
+.todos-holder .list-holder li.task-completed {
+	background-color: #A29E9E;
 }
 .todos-holder .list-holder li .priority.p1 {
 	background-color: #E06666;
@@ -146,4 +151,10 @@ body {
 }
 .todo-body .controls .input {
 	width: 100%;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }

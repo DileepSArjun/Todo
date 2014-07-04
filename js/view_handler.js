@@ -163,6 +163,13 @@ var TodosList = function(settings){
 				that._isEdit = false;
 				options.controls.add && (options.controls.add.disabled = false);
 				options.controls.edit && (options.controls.edit.disabled = true);
+				
+				if(options.detailView){
+					options.detailView.title && (options.detailView.title.value = "");
+					options.detailView.desc && (options.detailView.desc.value = "");
+					options.detailView.order && (options.detailView.order.value = "");
+					options.detailView.priority && (options.detailView.priority.value = "");
+				}
 			}
 		});
 
