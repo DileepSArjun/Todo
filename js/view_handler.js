@@ -83,7 +83,7 @@ var TodosList = function ( settings ) {
 	function backendDelete( id ) {
 		var items = backendPull();
 
-		items.removeValue( 'id', id );
+		items = items.filter( $$.getUnwantedItem( 'id', id ) );
 		backendPush( items );
 	}
 

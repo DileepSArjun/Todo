@@ -46,15 +46,11 @@ $$.toggleClass = function ( element, className ) {
     element.className = classString;
 };
 
-Array.prototype.removeValue = function ( name, value ) {
+$$.getUnwantedItem = function ( name, value ) {
     'use strict';
-    var array = [];
-
-    for ( var i = 0; i < this.length; i++ ) {
-        if ( this[ i ][ name ] !== value ) {
-            array.push( this[ i ] );
+    return function ( item ) {
+        if ( item[ name ] !== value ) {
+            return item;
         }
     }
-    this.length = 0; //clear original array
-    this.push.apply( this, array ); //push all elements except the one we want to delete
 };
