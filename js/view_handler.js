@@ -27,7 +27,7 @@ var TodosList = function ( settings ) {
 			"</div>";
 
 		return bo;
-	};
+	}
 
 	function orderByPriority( dataSet ) {
 		if ( dataSet.length <= 0 ) return [];
@@ -49,21 +49,21 @@ var TodosList = function ( settings ) {
 
 		return p1.concat( p2 )
 			.concat( p3 );
-	};
+	}
 
 	function backendPull() {
 		return JSON.parse( LocalStorekeep.get( STORAGE_KEY ) );
-	};
+	}
 
 	function backendPush( value ) {
 		LocalStorekeep.set( STORAGE_KEY, JSON.stringify( value ) );
-	};
+	}
 
 	function backendAdd( item ) {
 		var items = backendPull() || [];
 		item && items.push( item );
 		backendPush( items );
-	};
+	}
 
 	function backendEdit( item ) {
 		var items = backendPull();
@@ -78,20 +78,20 @@ var TodosList = function ( settings ) {
 		}
 
 		backendPush( items );
-	};
+	}
 
 	function backendDelete( id ) {
 		var items = backendPull();
 
 		items.removeValue( 'id', id );
 		backendPush( items );
-	};
+	}
 
 
 	function init() {
 		that.reload();
 		that._bindEvents();
-	};
+	}
 
 
 	this._nextOrder = 1;
@@ -100,7 +100,7 @@ var TodosList = function ( settings ) {
 
 	this._modifItemsLeft = function () {
 		var itemsBo = $$.findAll( 'li', options.holder ),
-			itemsCompleted = 0;;
+			itemsCompleted = 0;
 
 		that._itemsLeft = 0;
 		for ( var i = 0; i < itemsBo.length; i++ ) {
@@ -218,10 +218,14 @@ var TodosList = function ( settings ) {
 	this.reload = function () {
 		//var dataSet = fetchData();
 		var dataSet = backendPull();
-		options.holder.innerHTML = "";
+		options.holder.innerHTML = '';
 
-		if ( !dataSet ) return false;
-		if ( dataSet.length <= 0 ) return false;
+		if ( !dataSet ) {
+			return false;
+		}
+		if ( dataSet.length <= 0 ) {
+			return false;
+		}
 
 		for ( var i = 0; i < dataSet.length; i++ ) {
 			options.holder.appendChild( that._bindEventsOnList( addItem( dataSet[ i ] ) ) );
