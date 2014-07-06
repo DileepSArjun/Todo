@@ -48,10 +48,13 @@ body {
 	height: 29px;
 	border: 1px solid #666666;
 	border-radius: 8px;
+	cursor: pointer;
 }
 .todos-holder ul.list-holder {
 	padding: 0;
 	margin-bottom: 30px;
+	max-height: 450px;
+	overflow: auto;
 }
 .todos-holder .list-holder li {
 	position: relative;
@@ -62,6 +65,9 @@ body {
 	border-radius: 8px;
 	background-color: #FFFFFF;
 	display: block;
+}
+.todos-holder .list-holder li:focus {
+	background-color: #CBE4A6;
 }
 .todos-holder .list-holder li .view .toggle {
 	float: left;
@@ -152,6 +158,14 @@ body {
 .todo-body .controls .input {
 	width: 100%;
 }
+
+button,
+.button {
+	min-width: 70px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
 input:focus,
 select:focus,
 textarea:focus,

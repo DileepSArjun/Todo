@@ -17,6 +17,7 @@ var TodosList = function(settings){
 		bo.className = "li-item";
 		item.done && $$.toggleClass(bo, 'task-completed');
 		bo.setAttribute('data-attr', JSON.stringify(item));
+		bo.setAttribute('tabindex', that._nextOrder);
 
 		bo.innerHTML = "<div class='view'>"+
 						"<input class='toggle' type='checkbox'"+(item.done ? 'checked' : '')+">"+
@@ -116,7 +117,8 @@ var TodosList = function(settings){
 	};
 
 	this._bindEventsOnList = function(bo){
-		bo.addEventListener('click', function(event){
+
+		function onListSelect(event){
 			event.stopPropagation();
 
 			if(event.target.className === "toggle"){
@@ -138,9 +140,12 @@ var TodosList = function(settings){
 			}
 
 			that._isEdit = true;
-			options.controls.add && (options.controls.add.disabled = true);
-			options.controls.edit && (options.controls.edit.disabled = false);
-		});
+			//options.controls.add && (options.controls.add.disabled = true);
+			//options.controls.edit && (options.controls.edit.disabled = false);
+		};
+
+		bo.addEventListener('click', onListSelect);
+		bo.addEventListener('focus', onListSelect);
 
 		return bo;
 	};
@@ -161,8 +166,8 @@ var TodosList = function(settings){
 		$$.find('body').addEventListener('click', function(event){
 			if(!$$.hasClass(event.target, 'li-item')){
 				that._isEdit = false;
-				options.controls.add && (options.controls.add.disabled = false);
-				options.controls.edit && (options.controls.edit.disabled = true);
+				//options.controls.add && (options.controls.add.disabled = false);
+				//options.controls.edit && (options.controls.edit.disabled = true);
 				
 				if(options.detailView){
 					options.detailView.title && (options.detailView.title.value = "");
