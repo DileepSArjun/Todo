@@ -87,7 +87,7 @@
 				id : "id-" + todosObj.nextOrder(),
 				title : title.value || "test",
 				desc : desc.value || "",
-				order : order.value,
+				order : todosObj.nextOrder(),
 				priority : Math.abs(priority.value) || 3,
 				done : false
 			});

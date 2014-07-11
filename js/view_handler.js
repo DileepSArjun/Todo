@@ -16,8 +16,9 @@ var TodosList = function ( settings ) {
 
 		bo.id = "todos-item-" + that._nextOrder;
 		bo.className = "li-item";
-		item.done && $$.toggleClass( bo, 'task-completed' );
-		bo.setAttribute( 'data-attr', JSON.stringify( item ) );
+		item.done && $$.toggleClass(bo, 'task-completed');
+		bo.setAttribute('data-attr', JSON.stringify(item));
+		bo.setAttribute('tabindex', that._nextOrder);
 
 		bo.innerHTML = "<div class='view'>" +
 			"<input class='toggle' type='checkbox'" + ( item.done ? 'checked' : '' ) + ">" +
@@ -118,8 +119,9 @@ var TodosList = function ( settings ) {
 		}
 	};
 
-	this._bindEventsOnList = function ( bo ) {
-		bo.addEventListener( 'click', function ( event ) {
+	this._bindEventsOnList = function(bo){
+
+		function onListSelect(event){
 			event.stopPropagation();
 
 			if ( event.target.className === "toggle" ) {
@@ -141,10 +143,10 @@ var TodosList = function ( settings ) {
 			}
 
 			that._isEdit = true;
-			options.controls.add && ( options.controls.add.disabled = true );
-			options.controls.edit && ( options.controls.edit.disabled = false );
-		} );
+		};
 
+		bo.addEventListener('click', onListSelect);
+		bo.addEventListener('focus', onListSelect);
 		return bo;
 	};
 
@@ -160,20 +162,16 @@ var TodosList = function ( settings ) {
 		} );
 	};
 
-	this._bindEvents = function () {
-		$$.find( 'body' )
-			.addEventListener( 'click', function ( event ) {
-				if ( !$$.hasClass( event.target, 'li-item' ) ) {
-					that._isEdit = false;
-					options.controls.add && ( options.controls.add.disabled = false );
-					options.controls.edit && ( options.controls.edit.disabled = true );
-
-					if ( options.detailView ) {
-						options.detailView.title && ( options.detailView.title.value = "" );
-						options.detailView.desc && ( options.detailView.desc.value = "" );
-						options.detailView.order && ( options.detailView.order.value = "" );
-						options.detailView.priority && ( options.detailView.priority.value = "" );
-					}
+	this._bindEvents = function(){
+		$$.find('body').addEventListener('click', function(event){
+			if(!$$.hasClass(event.target, 'li-item')){
+				that._isEdit = false;
+				
+				if(options.detailView){
+					options.detailView.title && (options.detailView.title.value = "");
+					options.detailView.desc && (options.detailView.desc.value = "");
+					options.detailView.order && (options.detailView.order.value = "");
+					options.detailView.priority && (options.detailView.priority.value = "");
 				}
 			} );
 
