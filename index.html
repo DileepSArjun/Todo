@@ -10,42 +10,44 @@
 </head>
 <body class="todo-body">
 	<div class="main-container">
-		<div id="todos_holder" class="sub-holder todos-holder float-left">
+		<div id="todos_holder" class="round-border sub-holder todos-holder float-left">
 			<h2 class="todos_header">Todos</h2>
 			<div class="controls">
-				<input id="input_quick_add" type="text">
-				<select id="input_select_sort">
+				<input id="input_quick_add" class="" type="text">
+				<select id="input_select_sort" class="">
 					<option value="ORDER">Sort by Order</option>
 					<option value="PRIORITY">Sort by Priority</option>
 				</select>
 			</div>
+			<label for="add_new" class="btn float-left round-border">Add Todo</label>
 			<ul class="list-holder controls"></ul>
-			<div class="footer-controls">
+			<div class="round-border footer-controls">
 				<a class="span-label float-left items-left">0 items left</a>
-				<a class="span-label float-right clear-items">Clear 0 completed item</a>
+				<a class="span-label float-right clear-items btn">Clear 0 completed item</a>
 			</div>
 		</div>
-		<div class="sub-holder details-holder float-left">
+		<input id="add_new" class="display-none" name="add_new" type="checkbox" />
+		<div id="details_holder" class="round-border sub-holder details-holder float-left">
 			<h2>Details</h2>
-			<div class="controls">
-				<label class="label">Title</label>
-				<input id="input_title" class="input" type="text">
+			<div class="controls float-left">
+				<label class="label float-left">Title</label>
+				<input id="input_title" class="input float-right" type="text">
 			</div>
-			<div class="controls">
-				<label class="label">Description</label>
-				<input id="input_desc" class="input" type="text">
+			<div class="controls float-left">
+				<label class="label float-left">Description</label>
+				<input id="input_desc" class="input float-right" type="text">
 			</div>
-			<div class="controls">
-				<label class="label">Priority</label>
-				<input id="input_priority" class="input" type="text">
+			<div class="controls float-left">
+				<label class="label float-left">Priority</label>
+				<input id="input_priority" class="input float-right" type="text">
 			</div>
-			<div class="controls">
-				<label class="label">Order</label>
-				<input id="input_order" class="input" type="text" disabled>
+			<div class="controls float-left">
+				<label class="label float-left">Order</label>
+				<input id="input_order" class="input float-right" type="text" disabled>
 			</div>
-			<div class="controls">
-				<button id="add_btn">Add</button>
-				<button id="edit_btn">Edit</button>
+			<div class="controls float-left">
+				<button id="add_btn" class="btn">Add</button>
+				<button id="edit_btn" class="btn">Edit</button>
 			</div>
 		</div>
 	</div>

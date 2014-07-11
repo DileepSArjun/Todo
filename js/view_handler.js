@@ -166,14 +166,15 @@ var TodosList = function ( settings ) {
 		$$.find('body').addEventListener('click', function(event){
 			if(!$$.hasClass(event.target, 'li-item')){
 				that._isEdit = false;
-				
+
 				if(options.detailView){
 					options.detailView.title && (options.detailView.title.value = "");
 					options.detailView.desc && (options.detailView.desc.value = "");
 					options.detailView.order && (options.detailView.order.value = "");
 					options.detailView.priority && (options.detailView.priority.value = "");
 				}
-			} );
+			}
+		} );
 
 		that._bindControls();
 	};
